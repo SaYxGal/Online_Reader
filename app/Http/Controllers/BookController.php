@@ -2,55 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Book\FilterRequest;
+use App\Http\Requests\Book\StoreRequest;
+use App\Http\Requests\Book\UpdateRequest;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class BookController extends Controller
+class BookController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FilterRequest $request): AnonymousResourceCollection
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return $this->service->index($request->validated());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request): JsonResponse|BookResource
     {
-        //
+        return $this->service->store($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function get(Book $book): BookResource
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
-    {
-        //
+        return new BookResource($book);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(UpdateRequest $request, Book $book)
     {
         //
     }
@@ -58,8 +47,10 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Book $book)
+    public function delete(Book $book): BookResource
     {
-        //
+        $bookResource = new BookResource($book);
+        $book->delete();
+        return $bookResource;
     }
 }
