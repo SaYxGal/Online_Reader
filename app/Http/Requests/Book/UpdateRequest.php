@@ -25,7 +25,6 @@ class UpdateRequest extends FormRequest
             'title' => 'required|string',
             'description' => 'string',
             'genres' => 'array',
-            'genres.*.name' => 'required|string'
         ];
     }
 }

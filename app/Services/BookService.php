@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Book;
+namespace App\Services;
 
 use App\Http\Filters\BookFilter;
 use App\Http\Resources\BookResource;
@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
-class Service
+class BookService implements ServiceInterface
 {
     public function index($data): AnonymousResourceCollection
     {
@@ -38,8 +38,19 @@ class Service
         }
     }
 
-    public function update($data)
+    public function update($data, $item): JsonResponse|BookResource
     {
-
+        try {
+            DB::beginTransaction();
+            $item->title = $data['title'];
+            $item->description = $data['description'];
+            $item->genres()->sync($data['genres']);
+            $item->save();
+            DB::commit();
+            return new BookResource($item);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json(['message' => $exception->getMessage()]);
+        }
     }
 }

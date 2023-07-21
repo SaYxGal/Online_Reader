@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Book\Service;
+use App\Services\ServiceInterface;
 
 class BaseController extends Controller
 {
-    public Service $service;
-
-    public function __construct(Service $service)
-    {
-        $this->service = $service;
-    }
+    public ServiceInterface $service;
 }

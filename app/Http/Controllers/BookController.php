@@ -7,11 +7,17 @@ use App\Http\Requests\Book\StoreRequest;
 use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Services\BookService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BookController extends BaseController
 {
+    public function __construct()
+    {
+        $this->service = app()->make(BookService::class);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -39,9 +45,9 @@ class BookController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Book $book)
+    public function update(UpdateRequest $request, Book $book): JsonResponse|BookResource
     {
-        //
+        return $this->service->update($request->validated(), $book);
     }
 
     /**

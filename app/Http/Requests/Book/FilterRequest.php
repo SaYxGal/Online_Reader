@@ -23,7 +23,7 @@ class FilterRequest extends FormRequest
     {
         return [
             'title' => 'string',
-            'category_id' => 'integer',
+            'genres' => 'array',
             'page' => 'integer',
             'perPage' => 'integer',
         ];
