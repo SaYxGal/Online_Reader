@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\GenreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,5 +37,15 @@ Route::group([
     Route::get('/{book}', [BookController::class, 'get']);
     Route::post('/', [BookController::class, 'store']);
     Route::patch('/{book}', [BookController::class, 'update']);
-    Route::delete('/{book}', [BookController::class, 'delete']);
+    Route::delete('/{book}', [BookController::class, 'delete'])->middleware('admin');
+});
+Route::group([
+    'middleware' => 'jwt.auth',
+    'prefix' => 'genres'
+], function ($router) {
+    Route::get('/', [GenreController::class, 'index']);
+    Route::get('/{genre}', [GenreController::class, 'get']);
+    Route::post('/', [GenreController::class, 'store'])->middleware('admin');
+    Route::patch('/{genre}', [GenreController::class, 'update'])->middleware('admin');
+    Route::delete('/{genre}', [GenreController::class, 'delete'])->middleware('admin');
 });

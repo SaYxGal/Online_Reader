@@ -20,9 +20,9 @@ return new class extends Migration {
             $table->index('chapter_id', 'book_chapter_chapter_idx');
 
             $table->foreign('book_id', 'book_chapter_book_fk')
-                ->on('books')->references('id');
+                ->on('books')->references('id')->cascadeOnDelete();
             $table->foreign('chapter_id', 'book_chapter_chapter_fk')
-                ->on('chapters')->references('id')->onDelete('cascade');
+                ->on('chapters')->references('id')->cascadeOnDelete();
             $table->unique(array('book_id', 'chapter_id'));
             $table->timestamps();
         });

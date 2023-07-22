@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Http\Filters\BookFilter;
-use App\Http\Resources\BookResource;
-use App\Models\Book;
+use App\Http\Resources\GenreResource;
+use App\Models\Genre;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -13,41 +12,31 @@ class GenreService implements ServiceInterface
 {
     public function index($data): AnonymousResourceCollection
     {
-        $page = $data['page'] ?? 1;
-        $perPage = $data['perPage'] ?? 20;
-        unset($data['page'], $data['perPage']);
-        $filter = app()->make(BookFilter::class, ['queryParams' => array_filter($data)]);
-        $books = Book::filter($filter)->paginate($perPage, ['*'], 'page', $page);
-        return BookResource::collection($books);
+        $genres = Genre::all();
+        return GenreResource::collection($genres);
     }
 
-    public function store($data): JsonResponse|BookResource
+    public function store($data): JsonResponse|GenreResource
     {
         try {
             DB::beginTransaction();
-            $genres = $data['genres'];
-            unset($data['genres']);
-            $data['user_id'] = auth()->id();
-            $book = Book::create($data);
-            $book->genres()->attach($genres);
+            $genre = Genre::create($data);
             DB::commit();
-            return new BookResource($book->fresh('genres'));
+            return new GenreResource($genre);
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);
         }
     }
 
-    public function update($data, $item): JsonResponse|BookResource
+    public function update($data, $item): JsonResponse|GenreResource
     {
         try {
             DB::beginTransaction();
-            $item->title = $data['title'];
-            $item->description = $data['description'];
-            $item->genres()->sync($data['genres']);
+            $item->name = $data['name'];
             $item->save();
             DB::commit();
-            return new BookResource($item);
+            return new GenreResource($item);
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);

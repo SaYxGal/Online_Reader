@@ -13,9 +13,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BookController extends BaseController
 {
-    public function __construct()
+    public function __construct(BookService $service)
     {
-        $this->service = app()->make(BookService::class);
+        $this->service = $service;
     }
 
     /**

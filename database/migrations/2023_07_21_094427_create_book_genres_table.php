@@ -18,9 +18,9 @@ return new class extends Migration {
             $table->index('book_id', 'book_genre_book_idx');
             $table->index('genre_id', 'book_genre_genre_idx');
             $table->foreign('book_id', 'book_genre_book_fk')
-                ->on('books')->references('id');
+                ->on('books')->references('id')->cascadeOnDelete();
             $table->foreign('genre_id', 'book_genre_genre_fk')
-                ->on('genres')->references('id');
+                ->on('genres')->references('id')->cascadeOnDelete();
             $table->unique(array('book_id', 'genre_id'));
             $table->timestamps();
         });
