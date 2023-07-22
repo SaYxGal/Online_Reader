@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Resources\GenreResource;
+use App\Http\Resources\Genre\GenreResource;
 use App\Models\Genre;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

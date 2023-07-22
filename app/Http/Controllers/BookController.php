@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Book\FilterRequest;
 use App\Http\Requests\Book\StoreRequest;
 use App\Http\Requests\Book\UpdateRequest;
-use App\Http\Resources\BookResource;
+use App\Http\Resources\Book\BookResource;
 use App\Models\Book;
 use App\Services\BookService;
 use Illuminate\Http\JsonResponse;

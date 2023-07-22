@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Genre\DataRequest;
-use App\Http\Resources\GenreResource;
+use App\Http\Resources\Genre\GenreResource;
 use App\Models\Genre;
 use App\Services\GenreService;
 use Illuminate\Http\JsonResponse;

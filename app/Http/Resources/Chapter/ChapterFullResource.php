@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Chapter;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GenreResource extends JsonResource
+class ChapterFullResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,9 @@ class GenreResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "name" => $this->name
+            "title" => $this->title,
+            "pages" => $this->pages,
+            "order" => $this->order
         ];
     }
 }

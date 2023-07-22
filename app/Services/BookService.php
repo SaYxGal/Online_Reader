@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Http\Filters\BookFilter;
-use App\Http\Resources\BookResource;
+use App\Http\Resources\Book\BookResource;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -17,7 +17,7 @@ class BookService implements ServiceInterface
         $perPage = $data['perPage'] ?? 20;
         unset($data['page'], $data['perPage']);
         $filter = app()->make(BookFilter::class, ['queryParams' => array_filter($data)]);
-        $books = Book::filter($filter)->paginate($perPage, ['*'], 'page', $page);
+        $books = Book::with('genres')::filter($filter)->paginate($perPage, ['*'], 'page', $page);
         return BookResource::collection($books);
     }
 

@@ -23,7 +23,7 @@ return new class extends Migration {
                 ->on('chapters')->references('id')->cascadeOnDelete();
             $table->foreign('page_id', 'chapter_page_page_fk')
                 ->on('pages')->references('id')->cascadeOnDelete();
-            $table->unique(array('chapter_id', 'page_id'));
+            $table->unique('page_id');
             $table->timestamps();
         });
     }
