@@ -3,18 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Chapter\DataRequest;
+use App\Http\Requests\Chapter\GetRequest;
 use App\Http\Resources\Chapter\ChapterFullResource;
 use App\Http\Resources\Chapter\ChapterInfoResource;
 use App\Models\Book;
 use App\Models\Chapter;
-use App\Models\Page;
+use App\Services\ChapterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 
 class ChapterController extends Controller
 {
+    private ChapterService $service;
+
+    public function __construct(ChapterService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -26,34 +33,17 @@ class ChapterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DataRequest $request, Book $book): ChapterFullResource|JsonResponse
+    public function store(DataRequest $request, Book $book): ChapterInfoResource|JsonResponse
     {
-        try {
-            DB::beginTransaction();
-            $data = $request->validated();
-            $pages = $data['pages'];
-            unset($data['pages']);
-            $chapter = Chapter::create($data);
-            foreach ($pages as $key => $page_info) {
-                $page = Page::create($page_info);
-                $chapter->pages()->attach($page->id, ['order' => $key + 1]);
-            }
-            $book->chapters()->attach($chapter->id, ['order' => $book->chapters()->count() + 1]);
-            DB::commit();
-            return new ChapterFullResource($chapter);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json(['message' => $exception->getMessage()]);
-        }
-
+        return $this->service->store($request->validated(), $book);
     }
 
     /**
      * Display the specified resource.
      */
-    public function get(Chapter $chapter)
+    public function get(GetRequest $request, Book $book, string $chapterId): ChapterFullResource|JsonResponse
     {
-        //
+        return $this->service->get($request->validated(), $chapterId);
     }
 
     /**
@@ -67,8 +57,8 @@ class ChapterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Chapter $chapter)
+    public function delete(Book $book, string $chapterId): ChapterInfoResource|JsonResponse
     {
-        //
+        return $this->service->delete($chapterId);
     }
 }

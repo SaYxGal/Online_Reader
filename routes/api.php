@@ -44,10 +44,10 @@ Route::group([
         'prefix' => '{book}/chapters'
     ], function ($router) {
         Route::get('/', [ChapterController::class, 'index']);
-        Route::get('/{chapter}', [ChapterController::class, 'get']);
+        Route::get('/{chapterId}', [ChapterController::class, 'get']);
         Route::post('/', [ChapterController::class, 'store'])->middleware('user');
         Route::post('/{chapter}', [ChapterController::class, 'update'])->middleware('user');
-        Route::delete('/{chapter}', [ChapterController::class, 'delete'])->middleware('user');
+        Route::delete('/{chapterId}', [ChapterController::class, 'delete'])->middleware('user');
     });
 });
 Route::group([

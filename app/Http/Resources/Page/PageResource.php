@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Resources\Chapter;
+namespace App\Http\Resources\Page;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChapterInfoResource extends JsonResource
+class PageResource extends JsonResource
 {
+    public static $wrap = null;
+
     /**
      * Transform the resource into an array.
      *
@@ -15,7 +17,7 @@ class ChapterInfoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "title" => $this->title
+            'image' => $this->image
         ];
     }
 }

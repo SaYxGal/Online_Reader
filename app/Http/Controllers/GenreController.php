@@ -9,8 +9,10 @@ use App\Services\GenreService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class GenreController extends BaseController
+class GenreController extends Controller
 {
+    private GenreService $service;
+
     public function __construct(GenreService $service)
     {
         $this->service = $service;
@@ -21,7 +23,7 @@ class GenreController extends BaseController
      */
     public function index(): AnonymousResourceCollection
     {
-        return $this->service->index([]);
+        return $this->service->index();
     }
 
     /**
@@ -53,8 +55,6 @@ class GenreController extends BaseController
      */
     public function delete(Genre $genre): GenreResource
     {
-        $genreResource = new GenreResource($genre);
-        $genre->delete();
-        return $genreResource;
+        return $this->service->delete($genre);
     }
 }

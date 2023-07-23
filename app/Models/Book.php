@@ -22,4 +22,15 @@ class Book extends Model
     {
         return $this->belongsToMany(Chapter::class, 'book_chapters', 'book_id', 'chapter_id');
     }
+
+    public function delete(): true
+    {
+        $chapters = $this->chapters()->get();
+        foreach ($chapters as $chapter) {
+            $chapter->pages()->delete();
+        }
+        $this->chapters()->delete();
+        parent::delete();
+        return true;
+    }
 }

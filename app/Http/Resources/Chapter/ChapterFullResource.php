@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Chapter;
 
+use App\Http\Resources\Page\PageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +17,7 @@ class ChapterFullResource extends JsonResource
     {
         return [
             "title" => $this->title,
-            "pages" => $this->pages,
+            "pages" => PageResource::collection($this->pages),
             "order" => $this->order
         ];
     }

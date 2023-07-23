@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
-class BookService implements ServiceInterface
+class BookService
 {
     public function index($data): AnonymousResourceCollection
     {
@@ -52,5 +52,11 @@ class BookService implements ServiceInterface
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);
         }
+    }
+
+    public function delete(Book $item): BookResource|JsonResponse
+    {
+        $bookResource = new BookResource($item);
+        return $item->delete() ? $bookResource : response()->json(['message' => 'Not deleted']);
     }
 }

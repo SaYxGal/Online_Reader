@@ -11,8 +11,10 @@ use App\Services\BookService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class BookController extends BaseController
+class BookController extends Controller
 {
+    private BookService $service;
+
     public function __construct(BookService $service)
     {
         $this->service = $service;
@@ -53,10 +55,8 @@ class BookController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Book $book): BookResource
+    public function delete(Book $book): BookResource|JsonResponse
     {
-        $bookResource = new BookResource($book);
-        $book->delete();
-        return $bookResource;
+        return $this->service->delete($book);
     }
 }

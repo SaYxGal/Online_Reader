@@ -8,9 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
-class GenreService implements ServiceInterface
+class GenreService
 {
-    public function index($data): AnonymousResourceCollection
+    public function index(): AnonymousResourceCollection
     {
         $genres = Genre::all();
         return GenreResource::collection($genres);
@@ -41,5 +41,12 @@ class GenreService implements ServiceInterface
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);
         }
+    }
+
+    public function delete(Genre $genre): GenreResource
+    {
+        $genreResource = new GenreResource($genre);
+        $genre->delete();
+        return $genreResource;
     }
 }
