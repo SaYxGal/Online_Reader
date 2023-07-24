@@ -6,6 +6,7 @@ use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Book extends Model
 {
@@ -21,6 +22,11 @@ class Book extends Model
     public function chapters(): BelongsToMany
     {
         return $this->belongsToMany(Chapter::class, 'book_chapters', 'book_id', 'chapter_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'book_id', 'id');
     }
 
     public function delete(): true

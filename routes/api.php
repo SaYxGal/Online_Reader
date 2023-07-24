@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GenreController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,11 +44,16 @@ Route::group([
     Route::group([
         'prefix' => '{book}/chapters'
     ], function ($router) {
-        Route::get('/', [ChapterController::class, 'index']);
         Route::get('/{chapterId}', [ChapterController::class, 'get']);
         Route::post('/', [ChapterController::class, 'store'])->middleware('user');
-        Route::post('/{chapter}', [ChapterController::class, 'update'])->middleware('user');
+        Route::patch('/{chapterId}', [CommentController::class, 'store']);
         Route::delete('/{chapterId}', [ChapterController::class, 'delete'])->middleware('user');
+    });
+    Route::group([
+        'prefix' => '{book}/comments'
+    ], function ($router) {
+        Route::get('/', [CommentController::class, 'getBookComments']);
+        Route::post('/', [CommentController::class, 'store']);
     });
 });
 Route::group([
@@ -59,4 +65,11 @@ Route::group([
     Route::post('/', [GenreController::class, 'store'])->middleware('admin');
     Route::patch('/{genre}', [GenreController::class, 'update'])->middleware('admin');
     Route::delete('/{genre}', [GenreController::class, 'delete'])->middleware('admin');
+});
+Route::group([
+    'middleware' => 'jwt.auth',
+    'prefix' => 'comments'
+], function ($router) {
+    Route::patch('/{comment}', [CommentController::class, 'update']);
+    Route::delete('/{comment}', [CommentController::class, 'delete']);
 });

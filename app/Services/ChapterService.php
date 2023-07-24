@@ -14,12 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class ChapterService
 {
-    public function index(Book $book)
-    {
-        dd($book);
-        return ChapterInfoResource::collection($book->chapters);
-    }
-
     public function store($data, Book $book): JsonResponse|ChapterInfoResource
     {
         try {
@@ -42,12 +36,12 @@ class ChapterService
 
     public function get($data, string $chapterId): ChapterFullResource|JsonResponse
     {
-        if (isset($data['page'])) {
-            $pageInfo = ChapterPage::firstWhere('order', $data['page']);
+        if (isset($data['chap_page'])) {
+            $pageInfo = ChapterPage::firstWhere('order', $data['chap_page']);
             if (isset($pageInfo)) {
                 return response()->json([
                     'content' => new PageResource(Page::find($pageInfo->page_id)),
-                    'order' => $data['page']
+                    'order' => $data['chap_page']
                 ]);
             } else {
                 return response()->json([
@@ -57,19 +51,6 @@ class ChapterService
 
         } else {
             return new ChapterFullResource(Chapter::find($chapterId));
-        }
-    }
-
-    public function update($data, $item)
-    {
-        try {
-            DB::beginTransaction();
-
-            DB::commit();
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json(['message' => $exception->getMessage()]);
         }
     }
 

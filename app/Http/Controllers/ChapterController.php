@@ -7,7 +7,6 @@ use App\Http\Requests\Chapter\GetRequest;
 use App\Http\Resources\Chapter\ChapterFullResource;
 use App\Http\Resources\Chapter\ChapterInfoResource;
 use App\Models\Book;
-use App\Models\Chapter;
 use App\Services\ChapterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -46,17 +45,6 @@ class ChapterController extends Controller
         return $this->service->get($request->validated(), $chapterId);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Chapter $chapter)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function delete(Book $book, string $chapterId): ChapterInfoResource|JsonResponse
     {
         return $this->service->delete($chapterId);

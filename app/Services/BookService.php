@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Filters\BookFilter;
+use App\Http\Resources\Book\BookInfoResource;
 use App\Http\Resources\Book\BookResource;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +22,7 @@ class BookService
         return BookResource::collection($books);
     }
 
-    public function store($data): JsonResponse|BookResource
+    public function store($data): JsonResponse|BookInfoResource
     {
         try {
             DB::beginTransaction();
@@ -31,14 +32,14 @@ class BookService
             $book = Book::create($data);
             $book->genres()->attach($genres);
             DB::commit();
-            return new BookResource($book->fresh('genres'));
+            return new BookInfoResource($book);
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);
         }
     }
 
-    public function update($data, $item): JsonResponse|BookResource
+    public function update($data, $item): JsonResponse|BookInfoResource
     {
         try {
             DB::beginTransaction();
@@ -47,16 +48,16 @@ class BookService
             $item->genres()->sync($data['genres']);
             $item->save();
             DB::commit();
-            return new BookResource($item);
+            return new BookInfoResource($item);
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()]);
         }
     }
 
-    public function delete(Book $item): BookResource|JsonResponse
+    public function delete(Book $item): BookInfoResource|JsonResponse
     {
-        $bookResource = new BookResource($item);
+        $bookResource = new BookInfoResource($item);
         return $item->delete() ? $bookResource : response()->json(['message' => 'Not deleted']);
     }
 }
