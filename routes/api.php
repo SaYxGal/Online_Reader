@@ -70,6 +70,6 @@ Route::group([
     'middleware' => 'jwt.auth',
     'prefix' => 'comments'
 ], function ($router) {
-    Route::patch('/{comment}', [CommentController::class, 'update']);
-    Route::delete('/{comment}', [CommentController::class, 'delete']);
+    Route::patch('/{comment}', [CommentController::class, 'update'])->middleware('user');
+    Route::delete('/{comment}', [CommentController::class, 'delete'])->middleware('user');
 });

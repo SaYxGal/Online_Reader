@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class Chapter extends Model
 {
@@ -20,10 +21,17 @@ class Chapter extends Model
         return $this->belongsToMany(Page::class, 'chapter_pages', 'chapter_id', 'page_id');
     }
 
-    public function delete(): true
+    public function delete(): bool
     {
-        $this->pages()->delete();
-        parent::delete();
-        return true;
+        try {
+            DB::beginTransaction();
+            $this->pages()->delete();
+            parent::delete();
+            DB::commit();
+            return true;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return false;
+        }
     }
 }

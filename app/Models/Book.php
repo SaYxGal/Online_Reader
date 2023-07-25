@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Book extends Model
 {
@@ -29,14 +30,21 @@ class Book extends Model
         return $this->hasMany(Comment::class, 'book_id', 'id');
     }
 
-    public function delete(): true
+    public function delete(): bool
     {
-        $chapters = $this->chapters()->get();
-        foreach ($chapters as $chapter) {
-            $chapter->pages()->delete();
+        try {
+            DB::beginTransaction();
+            $chapters = $this->chapters()->get();
+            foreach ($chapters as $chapter) {
+                $chapter->pages()->delete();
+            }
+            $this->chapters()->delete();
+            parent::delete();
+            DB::commit();
+            return true;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return false;
         }
-        $this->chapters()->delete();
-        parent::delete();
-        return true;
     }
 }

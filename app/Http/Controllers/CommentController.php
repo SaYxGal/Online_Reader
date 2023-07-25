@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\CommentRequest;
 use App\Http\Resources\Comment\CommentCollection;
+use App\Http\Resources\Comment\CommentResource;
 use App\Models\Book;
 use App\Models\Comment;
 use App\Services\CommentService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
@@ -29,7 +30,7 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CommentRequest $request, Book $book, string $chapterId = '')
+    public function store(CommentRequest $request, Book $book, string $chapterId = ''): CommentResource|JsonResponse
     {
         $data = $request->validated();
         if (isset($data['chap_page'])) {
@@ -41,16 +42,16 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(CommentRequest $request, Comment $comment): CommentResource|JsonResponse
     {
-        //
+        return $this->service->update($request->validated(), $comment);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Comment $comment)
+    public function delete(Comment $comment): CommentResource|JsonResponse
     {
-        //
+        return $this->service->delete($comment);
     }
 }

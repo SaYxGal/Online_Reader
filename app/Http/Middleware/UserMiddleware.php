@@ -15,8 +15,12 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $bookId = $request->book->user_id;
-        if (auth()->check() && auth()->id() == $bookId) {
+        if (isset($request->book)) {
+            $itemId = $request->book->user_id;
+        } else if (isset($request->comment)) {
+            $itemId = $request->comment->user_id;
+        }
+        if (isset($itemId) && auth()->check() && auth()->id() == $itemId) {
             return $next($request);
         } else {
             return \response()->json(["message" => "This user isn't allowed access to object"], 403);
