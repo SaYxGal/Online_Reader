@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\StoreRequest;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+
 class AuthController extends Controller
 {
     /**
@@ -11,13 +16,33 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh']]);
+    }
+
+    public function register(StoreRequest $request): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->validated();
+            if ($data['password'] != $data['repeatPassword']) {
+                throw new \Exception("Repeated password mismatch");
+            }
+            unset($data['repeatPassword']);
+            $data['role'] = 'USER';
+            $user = User::create($data);
+            DB::commit();
+            return response()->json(['message' => "{$user->name} was created"], 201);
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
     }
 
     /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function login()
     {
@@ -33,17 +58,19 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function me()
+    public function me(): JsonResponse
     {
-        return response()->json(auth()->user());
+        $data = auth()->user();
+        unset($data['email'], $data['deleted_at'], $data['created_at'], $data['updated_at']);
+        return response()->json(['user' => $data]);
     }
 
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function logout()
     {
@@ -55,7 +82,7 @@ class AuthController extends Controller
     /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function refresh()
     {
@@ -67,7 +94,7 @@ class AuthController extends Controller
      *
      * @param string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithToken($token)
     {

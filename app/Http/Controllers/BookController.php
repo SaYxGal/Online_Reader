@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Book\FilterRequest;
 use App\Http\Requests\Book\StoreRequest;
 use App\Http\Requests\Book\UpdateRequest;
+use App\Http\Resources\Book\BookCollection;
+use App\Http\Resources\Book\BookInfoResource;
 use App\Http\Resources\Book\BookResource;
 use App\Models\Book;
 use App\Services\BookService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BookController extends Controller
 {
@@ -23,7 +24,7 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(FilterRequest $request): AnonymousResourceCollection
+    public function index(FilterRequest $request): BookCollection
     {
         return $this->service->index($request->validated());
     }
@@ -31,7 +32,7 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request): JsonResponse|BookResource
+    public function store(StoreRequest $request): JsonResponse|BookInfoResource
     {
         return $this->service->store($request->validated());
     }
