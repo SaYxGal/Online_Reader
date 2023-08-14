@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('book_id');
             $table->uuid('chapter_id');
-            $table->integer('order');
 
             $table->index('book_id', 'book_chapter_book_idx');
             $table->index('chapter_id', 'book_chapter_chapter_idx');

@@ -10,22 +10,30 @@ use App\Models\Chapter;
 use App\Models\ChapterPage;
 use App\Models\Page;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ChapterService
 {
-    public function store($data, Book $book): JsonResponse|ChapterInfoResource
+    public function store(Request $request, Book $book): JsonResponse|ChapterInfoResource
     {
         try {
             DB::beginTransaction();
-            $pages = $data['pages'];
-            unset($data['pages']);
+            if (!$request->hasFile('pages')) throw new \Error('Files not found');
+            $pages = $request->file('pages');
+            $data = array();
+            $data['title'] = $request->title;
+            $data['order'] = $book->chapters()->count() + 1;
             $chapter = Chapter::create($data);
-            foreach ($pages as $key => $page_info) {
+            foreach ($pages as $key => $image) {
+                $page_info = array();
+                $page_info['order'] = $key + 1;
+                $page_info['image'] = Storage::disk('public')->put('/images', $image);
                 $page = Page::create($page_info);
-                $chapter->pages()->attach($page->id, ['order' => $key + 1]);
+                $chapter->pages()->attach($page->id);
             }
-            $book->chapters()->attach($chapter->id, ['order' => $book->chapters()->count() + 1]);
+            $book->chapters()->attach($chapter->id);
             DB::commit();
             return new ChapterInfoResource($chapter);
         } catch (\Exception $exception) {

@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('pages', function (Blueprint $table) {
             $table->uuid('id');
             $table->string('image');
+            $table->unsignedBigInteger('order');
             $table->timestamps();
             $table->primary('id');
         });

@@ -32,9 +32,9 @@ class ChapterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DataRequest $request, Book $book): ChapterInfoResource|JsonResponse
+    public function store(Request $request, Book $book): ChapterInfoResource|JsonResponse
     {
-        return $this->service->store($request->validated(), $book);
+        return $this->service->store($request, $book);
     }
 
     /**

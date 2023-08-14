@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->uuid('chapter_id');
             $table->uuid('page_id');
-            $table->integer('order');
 
             $table->index('chapter_id', 'chapter_page_chapter_idx');
             $table->index('page_id', 'chapter_page_page_idx');

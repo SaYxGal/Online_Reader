@@ -6,6 +6,7 @@ use App\Http\Requests\Book\FilterRequest;
 use App\Http\Requests\Book\StoreRequest;
 use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\Book\BookCollection;
+use App\Http\Resources\Book\BookFullResource;
 use App\Http\Resources\Book\BookInfoResource;
 use App\Http\Resources\Book\BookResource;
 use App\Models\Book;
@@ -40,8 +41,11 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function get(Book $book): BookResource
+    public function get(Book $book): BookResource|BookFullResource
     {
+        if (isset(request()->type) && request()->type == "full") {
+            return new BookFullResource($book);
+        }
         return new BookResource($book);
     }
 

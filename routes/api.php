@@ -45,7 +45,7 @@ Route::group([
         'prefix' => '{book}/chapters'
     ], function ($router) {
         Route::get('/{chapterId}', [ChapterController::class, 'get']);
-        Route::post('/', [ChapterController::class, 'store'])->middleware('user');
+        Route::put('/', [ChapterController::class, 'store'])->middleware('user');
         Route::patch('/{chapterId}', [CommentController::class, 'store']);
         Route::delete('/{chapterId}', [ChapterController::class, 'delete'])->middleware('user');
     });

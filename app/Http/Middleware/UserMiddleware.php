@@ -20,7 +20,7 @@ class UserMiddleware
         } else if (isset($request->comment)) {
             $itemId = $request->comment->user_id;
         }
-        if (isset($itemId) && auth()->check() && auth()->id() == $itemId) {
+        if ((isset($itemId) && auth()->check() && auth()->id() == $itemId) || auth()->user()->role == "ADMIN") {
             return $next($request);
         } else {
             return \response()->json(["message" => "This user isn't allowed access to object"], 403);

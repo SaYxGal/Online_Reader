@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('chapters', function (Blueprint $table) {
             $table->uuid('id');
             $table->string('title')->default(' ');
+            $table->unsignedBigInteger('order');
             $table->timestamps();
             $table->primary('id');
         });
